@@ -5,7 +5,11 @@ class TwitterSearcher
   def random_result(text)
     if tweet = search(text).sample
       log "Found: \"#{tweet.text}\". Retweeting..."
-      Twitter.retweet(tweet.id) rescue nil
+
+      unless ENV["NO_RETWEET"]
+        Twitter.retweet(tweet.id) rescue nil
+      end
+
       {
         text: sanitise_tweet_text(tweet.text),
         link: "http://twitter.com/#{tweet.user[:id]}/status/#{tweet.id}",

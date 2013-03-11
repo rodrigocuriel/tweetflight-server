@@ -28,7 +28,7 @@ Locally:
 
 or via the Heroku Scheduler add-on:
 
-    ruby scripts/refresh.rb
+    ruby scripts/fetch.rb
 
 ## Deploying
 
