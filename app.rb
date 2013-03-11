@@ -4,6 +4,7 @@ require 'sinatra/jsonp'
 require 'dalli'
 require 'json'
 require 'twitter'
+require 'newrelic_rpm'
 
 require_relative './lib/lyrics'
 require_relative './lib/twitter_searcher'
@@ -16,6 +17,12 @@ set :allow_credentials, false
 set :max_age, "1728000"
 
 set :twitter_searcher, TwitterSearcher.new
+set :tweet_cache, TweetCache.new(
+  ::Dalli::Client.new(ENV['MEMCACHIER_SERVERS'].split(','),
+                      username: ENV['MEMCACHIER_USERNAME'],
+                      password: ENV['MEMCACHIER_PASSWORD'],
+                      namespace: 'tweetflight')
+)
 
 configure :development do
   # Fix thin logging
@@ -24,21 +31,10 @@ configure :development do
   require 'sinatra/reloader'
 
   set :allow_origin, '*'
-
-  set :tweet_cache, TweetCache.new(::Dalli::Client.new("localhost:11211", namespace: 'tweetflight'))
 end
 
 configure :production do
   set :allow_origin, 'http://tweetflight.wearebrightly.com'
-
-  require 'newrelic_rpm'
-
-  set :tweet_cache, TweetCache.new(
-    ::Dalli::Client.new(ENV['MEMCACHIER_SERVERS'].split(','),
-                        username: ENV['MEMCACHIER_USERNAME'],
-                        password: ENV['MEMCACHIER_PASSWORD'],
-                        namespace: 'tweetflight')
-  )
 end
 
 helpers do
