@@ -38,7 +38,7 @@ class TwitterSearcher
   end
 
   def is_tweet_ok(tweet)
-    tweet.text !~ /RT/ && tweet.text !~ /@/ && tweet.text !~ /http/ && tweet.text !~ /#/
+    tweet.text !~ /RT/ && tweet.text !~ /@/ && tweet.text !~ /http/ && tweet.text !~ /#/ && tweet.text !~ /fuck/ && tweet.text !~ /nigga/ && tweet.text !~ /shit/ && tweet.text !~ /nigger/ && tweet.from_user != "legitnotch"
   end
 
   def sanitise_tweet_text(text)
