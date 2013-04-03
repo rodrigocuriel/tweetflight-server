@@ -24,21 +24,23 @@ class TwitterSearcher
   def search(text)
     log "Searching twitter for \"#{text}\"..."
     attempts = 1
-    Twitter.search('"' + text + '"', result_type: "recent").results.select{ |tweet| is_tweet_ok(tweet) }
-  rescue Twitter::Error::ClientError => e
-    log "Twitter returned an error: #{e.inspect}"
-    if attempts <= SEARCH_RETRY_ATTEMPTS
-      puts "Attempt #{attempts}. Retrying..."
-      attempts += 1
-      retry
-    else
-      puts "#{attempts} failed attempts. Giving up on tweet search."
-      []
+    begin
+      Twitter.search('"' + text + '"', result_type: "recent").results.select{ |tweet| is_tweet_ok(tweet) }
+    rescue Twitter::Error::ClientError => e
+      log "Twitter returned an error: #{e.inspect}"
+      if attempts <= SEARCH_RETRY_ATTEMPTS
+        puts "Attempt #{attempts}. Retrying..."
+        attempts += 1
+        retry
+      else
+        puts "#{attempts} failed attempts. Giving up on tweet search."
+        []
+      end
     end
   end
 
   def is_tweet_ok(tweet)
-    tweet.text !~ /RT/ && tweet.text !~ /@/ && tweet.text !~ /http/ && tweet.text !~ /#/ && tweet.text !~ /fuck/ && tweet.text !~ /nigga/ && tweet.text !~ /shit/ && tweet.text !~ /nigger/ && tweet.from_user != "legitnotch"
+    tweet.text !~ /RT/ && tweet.text !~ /@/ && tweet.text !~ /http/ && tweet.text !~ /#/ && tweet.text !~ /fuck/ && tweet.text !~ /nigga/ && tweet.text !~ /shit/ && tweet.text !~ /nigger/ && tweet.from_user != "legitnotch" && tweet.from_user != "765Days"
   end
 
   def sanitise_tweet_text(text)
