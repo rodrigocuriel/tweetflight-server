@@ -24,7 +24,7 @@ twitter app you created.
 
 Locally:
 
-    bundle exec foreman run ruby scripts/refresh.rb
+    bundle exec foreman run ruby scripts/fetch.rb
 
 or via the Heroku Scheduler add-on:
 
